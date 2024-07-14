@@ -180,29 +180,61 @@ src\
  |--index.js        # App entry point
 ```
 
+## ER Diagram
+
+
+
 ## API Documentation
 
 To view the list of available APIs and their specifications, run the server and go to `http://localhost:3000/v1/docs` in your browser. This documentation page is automatically generated using the [swagger](https://swagger.io/) definitions written as comments in the route files.
 
-### API Endpoints
+## API Endpoints
 
 List of available routes:
 
-**Auth routes**:\
-`POST /v1/auth/register` - register\
-`POST /v1/auth/login` - login\
-`POST /v1/auth/refresh-tokens` - refresh auth tokens\
-`POST /v1/auth/forgot-password` - send reset password email\
-`POST /v1/auth/reset-password` - reset password\
-`POST /v1/auth/send-verification-email` - send verification email\
+**Auth routes**:
+`POST /v1/auth/register` - register
+`POST /v1/auth/login` - login
+`POST /v1/auth/refresh-tokens` - refresh auth tokens
+`POST /v1/auth/forgot-password` - send reset password email
+`POST /v1/auth/reset-password` - reset password
+`POST /v1/auth/send-verification-email` - send verification email
 `POST /v1/auth/verify-email` - verify email
 
-**User routes**:\
-`POST /v1/users` - create a user\
-`GET /v1/users` - get all users\
-`GET /v1/users/:userId` - get user\
-`PATCH /v1/users/:userId` - update user\
+**User routes**:
+`POST /v1/users` - create a user
+`GET /v1/users` - get all users
+`GET /v1/users/:userId` - get user
+`PATCH /v1/users/:userId` - update user
 `DELETE /v1/users/:userId` - delete user
+
+**Item routes**:
+`POST /v1/items` - create an item
+`GET /v1/items` - get all items
+`GET /v1/items/:itemId` - get item
+`PATCH /v1/items/:itemId` - update item
+`DELETE /v1/items/:itemId` - delete item
+
+**Meal routes**:
+`POST /v1/meals` - create a meal
+`GET /v1/meals` - get all meals
+`GET /v1/meals/:mealId` - get meal
+`PATCH /v1/meals/:mealId` - update meal
+`DELETE /v1/meals/:mealId` - delete meal
+
+**Meal Order routes**:
+`POST /v1/meal-orders` - create a meal order
+`GET /v1/meal-orders` - get all meal orders
+`GET /v1/meal-orders/:mealOrderId` - get meal order
+`PATCH /v1/meal-orders/:mealOrderId` - update meal order
+`DELETE /v1/meal-orders/:mealOrderId` - delete meal order
+
+**Meal Schedule routes**:
+`POST /v1/meal-schedules` - create a meal schedule
+`GET /v1/meal-schedules` - get all meal schedules
+`GET /v1/meal-schedules/:scheduleId` - get meal schedule
+`PATCH /v1/meal-schedules/:scheduleId` - update meal schedule
+`DELETE /v1/meal-schedules/:scheduleId` - delete meal schedule
 
 ## Error Handling
 
