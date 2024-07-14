@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int         @id @default(autoincrement())
+  email           String      @unique
+  password        String
+  name            String?
+  role            Role        @default(USER)
+  isBanned        Boolean     @default(false)
+  isEmailVerified Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  tokens          Token[]
+  mealOrders      MealOrder[]
+}
+
+model Token {
+  id          Int       @id @default(autoincrement())
+  token       String    @unique
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean   @default(false)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  createdAt   DateTime  @default(now())
+}
+
+model Item {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  category  FoodCategory
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  mealItems MealItem[]
+}
+
+model Meal {
+  id           Int            @id @default(autoincrement())
+  dayOfWeek    DayOfWeek
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  mealItems    MealItem[]
+  mealOrders   MealOrder[]
+  MealSchedule MealSchedule[]
+}
+
+model MealItem {
+  id     Int  @id @default(autoincrement())
+  meal   Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId Int
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId Int
+
+  @@unique([mealId, itemId])
+}
+
+model MealOrder {
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  meal      Meal        @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId    Int
+  date      DateTime
+  status    OrderStatus @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([userId, date])
+}
+
+model MealSchedule {
+  id        Int      @id @default(autoincrement())
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId    Int
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([mealId, startDate, endDate])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+enum FoodCategory {
+  PROTEIN
+  STARCH
+  VEGETABLE
+  OTHER
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+enum OrderStatus {
+  ACTIVE
+  CANCELLED
+  NO_MEAL
+}
