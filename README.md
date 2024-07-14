@@ -1,4 +1,4 @@
-# Office Meal Management System Backend
+[document-export-7-14-2024-11_54_12-AM.md](https://github.com/user-attachments/files/16215760/document-export-7-14-2024-11_54_12-AM.md)# Office Meal Management System Backend
 
 ## Overview
 
@@ -181,7 +181,14 @@ src\
 ```
 
 ## ER Diagram
+https://app.eraser.io/workspace/lhQFGLGSsnzuyblcltpV?origin=share
 
+[Uploading docu# Meal System
+
+![diagram-export-7-14-2024-11_54_12-AM](https://github.com/user-attachments/assets/8f8e75c4-a36c-4b2e-8867-bca176caf539)
+
+
+ment-export-7-14-2024-11_54_12-AM.md…]()
 
 
 ## API Documentation
