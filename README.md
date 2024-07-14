@@ -1,16 +1,17 @@
-# RESTful API Node Server Boilerplate
+# Office Meal Management System Backend
 
-A boilerplate/starter project for quickly building RESTful APIs using [Node.js](https://nodejs.org), [TypeScript](https://www.typescriptlang.org), [Express](https://expressjs.com), and [Prisma](https://www.prisma.io).
+## Overview
 
-This project is an adaptation of the project [RESTful API Node Server Boilerplate](https://github.com/hagopj13/node-express-boilerplate) using a [PostgreSQL](https://www.postgresql.org) database with [Prisma](https://www.prisma.io) ORM. Many of the files are just an adaptation to [TypeScript](https://www.typescriptlang.org) from the files of the previously mentioned project.
+This is the backend for the Office Meal Management System, a RESTful API built with Node.js, Express, TypeScript, and Prisma ORM. It provides endpoints for user authentication, meal management, and user management.
+
 
 ## Quick Start
 
 Clone the repo:
 
 ```bash
-git clone --depth 1 https://github.com/antonio-lazaro/prisma-express-typescript-boilerplate.git
-cd prisma-express-typescript-boilerplate
+git clone --depth 1 https://github.com/software-developer-yamin/office-meal-management-system-backend.git
+cd office-meal-management-system-backend
 npx rimraf ./.git
 ```
 
@@ -28,29 +29,20 @@ cp .env.example .env
 # open .env and modify the environment variables (if needed)
 ```
 
-## Table of Contents
-
-- [RESTful API Node Server Boilerplate](#restful-api-node-server-boilerplate)
-  - [Quick Start](#quick-start)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Commands](#commands)
-  - [Environment Variables](#environment-variables)
-  - [Project Structure](#project-structure)
-  - [API Documentation](#api-documentation)
-    - [API Endpoints](#api-endpoints)
-  - [Error Handling](#error-handling)
-  - [Validation](#validation)
-  - [Authentication](#authentication)
-  - [Authorization](#authorization)
-  - [Logging](#logging)
-  - [Linting](#linting)
-  - [Contributing](#contributing)
-  - [Inspirations](#inspirations)
-  - [License](#license)
-
 ## Features
 
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - Role-based access control (Admin and General User roles)
+- **User Management**
+  - CRUD operations for users
+  - User banning functionality
+- **Meal Management**
+  - CRUD operations for meal items
+  - Meal scheduling and constraints
+- **Order Management**
+  - Meal ordering for users
+  - View meal schedules and orders
 - **SQL database**: [PostgreSQL](https://www.postgresql.org) object data modeling using [Prisma](https://www.prisma.io) ORM
 - **Authentication and authorization**: using [passport](http://www.passportjs.org)
 - **Validation**: request data validation using [Joi](https://joi.dev)
@@ -356,16 +348,3 @@ To modify the ESLint configuration, update the `.eslintrc.json` file. To modify 
 To prevent a certain file or directory from being linted, add it to `.eslintignore` and `.prettierignore`.
 
 To maintain a consistent coding style across different IDEs, the project contains `.editorconfig`
-
-## Contributing
-
-Contributions are more than welcome! Please check out the [contributing guide](CONTRIBUTING.md).
-
-## Inspirations
-
-- [RESTful API Node Server Boilerplate](https://github.com/hagopj13/node-express-boilerplate)
-
-## License
-
-[MIT](LICENSE)
-# office-meal-management-system-backend
