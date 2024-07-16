@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id              Int         @id @default(autoincrement())
-  email           String      @unique
+  id              Int            @id @default(autoincrement())
+  email           String         @unique
   password        String
   name            String?
-  role            Role        @default(USER)
-  isBanned        Boolean     @default(false)
-  isEmailVerified Boolean     @default(false)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  role            Role           @default(USER)
+  isBanned        Boolean        @default(false)
+  isEmailVerified Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   tokens          Token[]
   mealOrders      MealOrder[]
+  MealSchedule    MealSchedule[]
 }
 
 model Token {
@@ -82,12 +83,14 @@ model MealSchedule {
   id        Int      @id @default(autoincrement())
   meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
   startDate DateTime
   endDate   DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([mealId, startDate, endDate])
+  @@unique([mealId, userId, startDate, endDate])
 }
 
 enum Role {

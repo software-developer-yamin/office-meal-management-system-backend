@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    auth('createMealOrder'),
+    auth('manageMealOrders'),
     validate(mealOrderValidation.createMealOrder),
     mealOrderController.createMealOrder
   )
