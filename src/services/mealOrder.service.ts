@@ -40,26 +40,15 @@ const queryMealOrders = async (
     sortBy?: string;
     sortType?: 'asc' | 'desc';
   }
-): Promise<{ results: MealOrder[]; totalPages: number; totalResults: number }> => {
+): Promise<MealOrder[]> => {
   const { limit = 10, page = 1, sortBy, sortType = 'asc' } = options;
 
-  const [results, totalResults] = await Promise.all([
-    prisma.mealOrder.findMany({
-      where: filter,
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: sortBy ? { [sortBy]: sortType } : undefined
-    }),
-    prisma.mealOrder.count({ where: filter })
-  ]);
-
-  const totalPages = Math.ceil(totalResults / limit);
-
-  return {
-    results,
-    totalPages,
-    totalResults
-  };
+  return prisma.mealOrder.findMany({
+    where: filter,
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: sortBy ? { [sortBy]: sortType } : undefined
+  });
 };
 
 const getMealOrderById = async (id: number): Promise<MealOrder | null> => {

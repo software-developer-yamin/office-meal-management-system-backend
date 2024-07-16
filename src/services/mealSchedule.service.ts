@@ -1,32 +1,302 @@
+// // src/services/mealSchedule.service.ts
+
+// import { MealSchedule, Prisma } from '@prisma/client';
+// import httpStatus from 'http-status';
+// import prisma from '../client';
+// import ApiError from '../utils/ApiError';
+
+// /**
+//  * Create a meal schedule
+//  * @param {number} mealId
+//  * @param {Date} startDate
+//  * @param {Date} endDate
+//  * @returns {Promise<MealSchedule>}
+//  */
+// const createMealSchedule = async (
+//   mealId: number,
+//   startDate: Date,
+//   endDate: Date
+// ): Promise<MealSchedule> => {
+//   // Check if meal exists
+//   const meal = await prisma.meal.findUnique({ where: { id: mealId } });
+//   if (!meal) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Meal not found');
+//   }
+
+//   // Check for overlapping schedules
+//   const overlappingSchedule = await prisma.mealSchedule.findFirst({
+//     where: {
+//       mealId,
+//       OR: [
+//         { startDate: { lte: endDate }, endDate: { gte: startDate } },
+//         { startDate: { gte: startDate, lte: endDate } },
+//         { endDate: { gte: startDate, lte: endDate } }
+//       ]
+//     }
+//   });
+
+//   if (overlappingSchedule) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Overlapping schedule exists');
+//   }
+
+//   return prisma.mealSchedule.create({
+//     data: {
+//       mealId,
+//       startDate,
+//       endDate
+//     },
+//     include: {
+//       meal: {
+//         include: {
+//           mealItems: {
+//             include: {
+//               item: true
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+
+// /**
+//  * Query for meal schedules
+//  * @param {Object} filter - Prisma filter
+//  * @param {Object} options - Query options
+//  * @returns {Promise<MealSchedule[]>}
+//  */
+// const queryMealSchedules = async (
+//   filter: Prisma.MealScheduleWhereInput,
+//   options: {
+//     limit?: number;
+//     page?: number;
+//     sortBy?: string;
+//     sortType?: 'asc' | 'desc';
+//   }
+// ): Promise<MealSchedule[]> => {
+//   const { limit = 10, page = 1, sortBy, sortType = 'asc' } = options;
+//   return prisma.mealSchedule.findMany({
+//     where: filter,
+//     skip: (page - 1) * limit,
+//     take: limit,
+//     orderBy: sortBy ? { [sortBy]: sortType } : undefined,
+//     include: {
+//       meal: {
+//         include: {
+//           mealItems: {
+//             include: {
+//               item: true
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+
+// /**
+//  * Get meal schedule by id
+//  * @param {number} id
+//  * @returns {Promise<MealSchedule | null>}
+//  */
+// const getMealScheduleById = async (id: number): Promise<MealSchedule | null> => {
+//   return prisma.mealSchedule.findUnique({
+//     where: { id },
+//     include: {
+//       meal: {
+//         include: {
+//           mealItems: {
+//             include: {
+//               item: true
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+
+// /**
+//  * Update meal schedule by id
+//  * @param {number} id
+//  * @param {Object} updateBody
+//  * @returns {Promise<MealSchedule>}
+//  */
+// const updateMealScheduleById = async (
+//   id: number,
+//   updateBody: {
+//     mealId?: number;
+//     startDate?: Date;
+//     endDate?: Date;
+//   }
+// ): Promise<MealSchedule> => {
+//   const mealSchedule = await getMealScheduleById(id);
+//   if (!mealSchedule) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Meal schedule not found');
+//   }
+
+//   if (updateBody.mealId) {
+//     const meal = await prisma.meal.findUnique({ where: { id: updateBody.mealId } });
+//     if (!meal) {
+//       throw new ApiError(httpStatus.NOT_FOUND, 'Meal not found');
+//     }
+//   }
+
+//   // Check for overlapping schedules
+//   if (updateBody.startDate || updateBody.endDate) {
+//     const overlappingSchedule = await prisma.mealSchedule.findFirst({
+//       where: {
+//         id: { not: id },
+//         mealId: updateBody.mealId || mealSchedule.mealId,
+//         OR: [
+//           {
+//             startDate: { lte: updateBody.endDate || mealSchedule.endDate },
+//             endDate: { gte: updateBody.startDate || mealSchedule.startDate }
+//           },
+//           {
+//             startDate: {
+//               gte: updateBody.startDate || mealSchedule.startDate,
+//               lte: updateBody.endDate || mealSchedule.endDate
+//             }
+//           },
+//           {
+//             endDate: {
+//               gte: updateBody.startDate || mealSchedule.startDate,
+//               lte: updateBody.endDate || mealSchedule.endDate
+//             }
+//           }
+//         ]
+//       }
+//     });
+
+//     if (overlappingSchedule) {
+//       throw new ApiError(httpStatus.BAD_REQUEST, 'Overlapping schedule exists');
+//     }
+//   }
+
+//   return prisma.mealSchedule.update({
+//     where: { id },
+//     data: updateBody,
+//     include: {
+//       meal: {
+//         include: {
+//           mealItems: {
+//             include: {
+//               item: true
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+
+// /**
+//  * Delete meal schedule by id
+//  * @param {number} id
+//  * @returns {Promise<MealSchedule>}
+//  */
+// const deleteMealScheduleById = async (id: number): Promise<MealSchedule> => {
+//   const mealSchedule = await getMealScheduleById(id);
+//   if (!mealSchedule) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Meal schedule not found');
+//   }
+//   return prisma.mealSchedule.delete({
+//     where: { id },
+//     include: {
+//       meal: {
+//         include: {
+//           mealItems: {
+//             include: {
+//               item: true
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+
+// export default {
+//   createMealSchedule,
+//   queryMealSchedules,
+//   getMealScheduleById,
+//   updateMealScheduleById,
+//   deleteMealScheduleById
+// };
 // src/services/mealSchedule.service.ts
 
-import { MealSchedule, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
 import prisma from '../client';
 import ApiError from '../utils/ApiError';
 
+type MealScheduleWithRelations = Prisma.MealScheduleGetPayload<{
+  include: {
+    meal: {
+      include: {
+        mealItems: {
+          include: {
+            item: true;
+          };
+        };
+      };
+    };
+    user: {
+      select: {
+        id: true;
+        name: true;
+        email: true;
+      };
+    };
+  };
+}>;
+
 /**
- * Create a meal schedule
+ * Check if a meal exists
  * @param {number} mealId
- * @param {Date} startDate
- * @param {Date} endDate
- * @returns {Promise<MealSchedule>}
+ * @throws {ApiError}
  */
-const createMealSchedule = async (
-  mealId: number,
-  startDate: Date,
-  endDate: Date
-): Promise<MealSchedule> => {
-  // Check if meal exists
+const checkMealExists = async (mealId: number): Promise<void> => {
   const meal = await prisma.meal.findUnique({ where: { id: mealId } });
   if (!meal) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Meal not found');
   }
+};
 
-  // Check for overlapping schedules
+/**
+ * Check if a user exists
+ * @param {number} userId
+ * @throws {ApiError}
+ */
+const checkUserExists = async (userId: number): Promise<void> => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+};
+
+/**
+ * Check for overlapping schedules
+ * @param {number} mealId
+ * @param {number} userId
+ * @param {Date} startDate
+ * @param {Date} endDate
+ * @param {number} [excludeId] - ID to exclude from the check (used for updates)
+ * @throws {ApiError}
+ */
+const checkOverlappingSchedules = async (
+  mealId: number,
+  userId: number,
+  startDate: Date,
+  endDate: Date,
+  excludeId?: number
+): Promise<void> => {
   const overlappingSchedule = await prisma.mealSchedule.findFirst({
     where: {
+      id: excludeId ? { not: excludeId } : undefined,
       mealId,
+      userId,
       OR: [
         { startDate: { lte: endDate }, endDate: { gte: startDate } },
         { startDate: { gte: startDate, lte: endDate } },
@@ -38,10 +308,29 @@ const createMealSchedule = async (
   if (overlappingSchedule) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Overlapping schedule exists');
   }
+};
+
+/**
+ * Create a meal schedule
+ * @param {number} mealId
+ * @param {number} userId
+ * @param {Date} startDate
+ * @param {Date} endDate
+ * @returns {Promise<MealScheduleWithRelations>}
+ */
+const createMealSchedule = async (
+  userId: number,
+  scheduleBody: { mealId: number; startDate: Date; endDate: Date }
+): Promise<MealScheduleWithRelations> => {
+  const { mealId, startDate, endDate } = scheduleBody;
+  await checkMealExists(mealId);
+  await checkUserExists(userId);
+  await checkOverlappingSchedules(mealId, userId, startDate, endDate);
 
   return prisma.mealSchedule.create({
     data: {
       mealId,
+      userId,
       startDate,
       endDate
     },
@@ -54,6 +343,13 @@ const createMealSchedule = async (
             }
           }
         }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
       }
     }
   });
@@ -63,7 +359,7 @@ const createMealSchedule = async (
  * Query for meal schedules
  * @param {Object} filter - Prisma filter
  * @param {Object} options - Query options
- * @returns {Promise<MealSchedule[]>}
+ * @returns {Promise<MealScheduleWithRelations[]>}
  */
 const queryMealSchedules = async (
   filter: Prisma.MealScheduleWhereInput,
@@ -73,7 +369,7 @@ const queryMealSchedules = async (
     sortBy?: string;
     sortType?: 'asc' | 'desc';
   }
-): Promise<MealSchedule[]> => {
+): Promise<MealScheduleWithRelations[]> => {
   const { limit = 10, page = 1, sortBy, sortType = 'asc' } = options;
   return prisma.mealSchedule.findMany({
     where: filter,
@@ -89,6 +385,13 @@ const queryMealSchedules = async (
             }
           }
         }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
       }
     }
   });
@@ -97,9 +400,9 @@ const queryMealSchedules = async (
 /**
  * Get meal schedule by id
  * @param {number} id
- * @returns {Promise<MealSchedule | null>}
+ * @returns {Promise<MealScheduleWithRelations | null>}
  */
-const getMealScheduleById = async (id: number): Promise<MealSchedule | null> => {
+const getMealScheduleById = async (id: number): Promise<MealScheduleWithRelations | null> => {
   return prisma.mealSchedule.findUnique({
     where: { id },
     include: {
@@ -111,6 +414,13 @@ const getMealScheduleById = async (id: number): Promise<MealSchedule | null> => 
             }
           }
         }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
       }
     }
   });
@@ -120,59 +430,36 @@ const getMealScheduleById = async (id: number): Promise<MealSchedule | null> => 
  * Update meal schedule by id
  * @param {number} id
  * @param {Object} updateBody
- * @returns {Promise<MealSchedule>}
+ * @returns {Promise<MealScheduleWithRelations>}
  */
 const updateMealScheduleById = async (
   id: number,
   updateBody: {
     mealId?: number;
+    userId?: number;
     startDate?: Date;
     endDate?: Date;
   }
-): Promise<MealSchedule> => {
+): Promise<MealScheduleWithRelations> => {
   const mealSchedule = await getMealScheduleById(id);
   if (!mealSchedule) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Meal schedule not found');
   }
 
   if (updateBody.mealId) {
-    const meal = await prisma.meal.findUnique({ where: { id: updateBody.mealId } });
-    if (!meal) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Meal not found');
-    }
+    await checkMealExists(updateBody.mealId);
   }
 
-  // Check for overlapping schedules
-  if (updateBody.startDate || updateBody.endDate) {
-    const overlappingSchedule = await prisma.mealSchedule.findFirst({
-      where: {
-        id: { not: id },
-        mealId: updateBody.mealId || mealSchedule.mealId,
-        OR: [
-          {
-            startDate: { lte: updateBody.endDate || mealSchedule.endDate },
-            endDate: { gte: updateBody.startDate || mealSchedule.startDate }
-          },
-          {
-            startDate: {
-              gte: updateBody.startDate || mealSchedule.startDate,
-              lte: updateBody.endDate || mealSchedule.endDate
-            }
-          },
-          {
-            endDate: {
-              gte: updateBody.startDate || mealSchedule.startDate,
-              lte: updateBody.endDate || mealSchedule.endDate
-            }
-          }
-        ]
-      }
-    });
-
-    if (overlappingSchedule) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Overlapping schedule exists');
-    }
+  if (updateBody.userId) {
+    await checkUserExists(updateBody.userId);
   }
+
+  const mealId = updateBody.mealId || mealSchedule.mealId;
+  const userId = updateBody.userId || mealSchedule.userId;
+  const startDate = updateBody.startDate || mealSchedule.startDate;
+  const endDate = updateBody.endDate || mealSchedule.endDate;
+
+  await checkOverlappingSchedules(mealId, userId, startDate, endDate, id);
 
   return prisma.mealSchedule.update({
     where: { id },
@@ -186,6 +473,13 @@ const updateMealScheduleById = async (
             }
           }
         }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
       }
     }
   });
@@ -194,9 +488,9 @@ const updateMealScheduleById = async (
 /**
  * Delete meal schedule by id
  * @param {number} id
- * @returns {Promise<MealSchedule>}
+ * @returns {Promise<MealScheduleWithRelations>}
  */
-const deleteMealScheduleById = async (id: number): Promise<MealSchedule> => {
+const deleteMealScheduleById = async (id: number): Promise<MealScheduleWithRelations> => {
   const mealSchedule = await getMealScheduleById(id);
   if (!mealSchedule) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Meal schedule not found');
@@ -211,6 +505,13 @@ const deleteMealScheduleById = async (id: number): Promise<MealSchedule> => {
               item: true
             }
           }
+        }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true
         }
       }
     }

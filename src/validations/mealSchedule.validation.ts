@@ -1,5 +1,3 @@
-// src/validations/mealSchedule.validation.ts
-
 import Joi from 'joi';
 
 const createMealSchedule = {
@@ -13,7 +11,11 @@ const createMealSchedule = {
 const getMealSchedules = {
   query: Joi.object().keys({
     mealId: Joi.number().integer(),
+    userId: Joi.number().integer(),
+    startDate: Joi.date().iso(),
+    endDate: Joi.date().iso(),
     sortBy: Joi.string(),
+    sortType: Joi.string().valid('asc', 'desc'),
     limit: Joi.number().integer(),
     page: Joi.number().integer()
   })
@@ -32,6 +34,7 @@ const updateMealSchedule = {
   body: Joi.object()
     .keys({
       mealId: Joi.number().integer(),
+      userId: Joi.number().integer(),
       startDate: Joi.date().iso(),
       endDate: Joi.date().iso().min(Joi.ref('startDate'))
     })
