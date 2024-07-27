@@ -35,9 +35,19 @@ app.use(xss());
 // gzip compression
 app.use(compression());
 
-// enable cors
-app.use(cors());
-app.options('*', cors());
+// CORS configuration
+const corsOptions = {
+  origin: config.cors.origin,
+  methods: config.cors.methods,
+  credentials: config.cors.credentials,
+  maxAge: config.cors.maxAge
+};
+
+// Enable CORS
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // jwt authentication
 app.use(passport.initialize());
