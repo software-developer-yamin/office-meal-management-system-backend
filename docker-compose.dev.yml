@@ -3,4 +3,5 @@ version: '3.8'
 services:
   node-app:
     container_name: node-app-dev
-    command: yarn db:push && yarn dev -L
+    command: sh -c "yarn db:push && yarn dev -L"
+
